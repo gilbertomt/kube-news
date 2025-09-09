@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:17.6-alpine3.22
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: Pg#123
+      POSTGRES_USER: kubedevnews
+      POSTGRES_DB: kubedevnews
+    ports:
+      - 5432:5432
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DB_DATABASE=kubedevnews
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=kubedevnews
+      - DB_PASSWORD=Pg#123
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
+    volumes:
+      - ..:/app
+
+
+
