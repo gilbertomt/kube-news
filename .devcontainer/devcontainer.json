@@ -8,7 +8,17 @@
 	"forwardPorts": [
 		5432,
 		8080
-	]
+	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"humao.rest-client",
+				"dbaeumer.vscode-eslint",
+				"ms-azuretools.vscode-docker"
+			]
+		}
+	},
+	"postCreateCommand": "cd src && npm install"
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
