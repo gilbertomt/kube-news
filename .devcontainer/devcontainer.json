@@ -2,7 +2,10 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/javascript-node-postgres
 {
 	"name": "DEV Kube News",
-	"dockerComposeFile": "docker-compose.yml",
+	"dockerComposeFile": [
+		"../compose.yml",
+		"docker-compose.override.yml"
+	],
 	"service": "app",
 	"workspaceFolder": "/app",
 	"forwardPorts": [

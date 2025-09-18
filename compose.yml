@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres:17.6-alpine3.22
+    container_name: kubedevnews_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: Pg#123
+      POSTGRES_USER: kubedevnews
+      POSTGRES_DB: kubedevnews
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - kubedevnews_network
+  app:
+    container_name: kubedevnews_app
+    image : kubedevnews_app:v1
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production
+      APP_ENV: production
+      DB_DATABASE: kubedevnews
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: kubedevnews
+      DB_PASSWORD: Pg#123
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 8080:8080
+    networks:
+      - kubedevnews_network
+
+volumes:
+  postgres_data:
+    name: kubedevnews_db
+
+networks:
+  kubedevnews_network:
+    name: kubedevnews_network
+    driver: bridge

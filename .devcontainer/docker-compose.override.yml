@@ -1,0 +1,22 @@
+services:
+  db:
+    ports:
+      - 5432:5432
+
+  app:
+    container_name: kubedevnews_app
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile.dev
+    environment:
+      NODE_ENV: development
+      APP_ENV: development
+      DB_DATABASE: kubedevnews
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: kubedevnews
+      DB_PASSWORD: Pg#123
+    depends_on:
+      - db
+    volumes:
+      - .:/app

@@ -1,3 +1,56 @@
+
+# Como rodar em produção com Docker Compose
+
+Pré-requisitos:
+- Docker e Docker Compose instalados
+
+O arquivo 'compose.yml' sobre dois serviços:
+- 'db' (PostgreSQL)
+- 'app' (Kube News)
+
+As variáveis de ambiente necessárias já estão definidas no 'compose.yml'.
+
+### Passos:
+1. Build e subida:
+   ```bash
+   docker compose -f compose.yml up -d --build
+   ```
+
+2. Verificar os serviços
+   ```bash
+   docker compose -f compose.yml ps
+   docker compose -f compose.yml logs -f app
+   ```
+
+3. Acessar a aplicação:
+   - APP: http://localhost:8080
+   - Health Check: http://localhost:8080/health
+   - Readiness: http://localhost:8080/ready
+
+4. Popular dados de exemplo (opcional)
+- Via VS Code (extensão REST Client): abra `popula-dados.http` e clique em “Send Request”.
+- Via curl (Linux):
+```bash
+curl -X POST http://localhost:8080/api/post \
+  -H "Content-Type: application/json" \
+  --data-binary @popula-dados.http
+```
+
+5. Parar e remover os serviços
+   ```bash
+   docker compose -f compose.yml down
+   # Para remover volume do Postgres (dados serão perdidos):
+   docker compose -f compose.yml down -v
+   ```
+
+Dicas:
+- Se a porta 8080 ou 5432 já estiver em uso no host, edite os mapeamentos de porta no `compose.yml`.
+- Em caso de conflito de nome de container, execute:
+  ```bash
+  docker rm -f kubedevnews_app kubedevnews_db 2>/dev/null || true
+  docker compose -f compose.yml up -d --build
+  ```
+---
 # Kube-News
 
 Uma aplicação de notícias desenvolvida em NodeJS para demonstrar o uso de containers e Kubernetes.
